@@ -23,13 +23,14 @@ export default function AdmissionsPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    // MOCK SUBMISSION FOR DEMO
-    setTimeout(() => {
-      setStatus('success'); 
-      setForm({ studentName: '', parentName: '', phone: '', email: '', classApplying: '', dob: '', gender: '', address: '', previousSchool: '', message: '' });
-      setLoading(false);
-      setTimeout(() => setStatus(null), 5000);
-    }, 1500);
+    try {
+      const res = await fetch('/api/admissions', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok) { setStatus('success'); setForm({ studentName: '', parentName: '', phone: '', email: '', classApplying: '', dob: '', gender: '', address: '', previousSchool: '', message: '' }); }
+      else setStatus('error');
+    } catch { setStatus('error'); }
+    setLoading(false);
+    setTimeout(() => setStatus(null), 5000);
   };
 
   return (

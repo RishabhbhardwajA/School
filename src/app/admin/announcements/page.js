@@ -10,6 +10,9 @@ function AdminSidebar({ active }) {
     { href: '/admin/admissions', icon: '🎓', label: 'Admissions' },
     { href: '/admin/contacts', icon: '💬', label: 'Contact Queries' },
     { href: '/admin/announcements', icon: '📢', label: 'Announcements' },
+    { href: '/admin/events', icon: '📅', label: 'Events' },
+    { href: '/admin/faqs', icon: '❓', label: 'FAQs' },
+    { href: '/admin/settings', icon: '⚙️', label: 'Settings' },
   ];
   const handleLogout = () => { localStorage.removeItem('admin_token'); router.push('/admin/login'); };
   return (
@@ -30,14 +33,13 @@ export default function AdminAnnouncements() {
   const router = useRouter();
 
   const fetchData = () => {
-    // MOCK DATA FOR DEMO PURPOSES
-    setAnnouncements([
-      { _id: '1', text: '🎓 Admissions Open for 2026-27 — Apply Now!', active: true },
-      { _id: '2', text: '🏆 100% Board Results — 5th Consecutive Year of Excellence', active: true },
-      { _id: '3', text: '📅 Annual Sports Day — March 15, 2026', active: true },
-      { _id: '4', text: 'Important Notice: School closed on Friday.', active: false }
-    ]);
-    setLoading(false);
+    const token = localStorage.getItem('admin_token');
+    if (!token) { router.push('/admin/login'); return; }
+    fetch('/api/announcements')
+      .then(r => r.json())
+      .then(d => { if (d.success) setAnnouncements(d.data); })
+      .catch(() => {})
+      .finally(() => setLoading(false));
   };
 
   useEffect(() => { fetchData(); }, []);

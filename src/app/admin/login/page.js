@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import './admin-auth.css';
 
@@ -7,16 +7,38 @@ export default function AdminAuth() {
   const [isRightPanelActive, setIsRightPanelActive] = useState(false);
   const router = useRouter();
 
+  // DB Health State
+  const [dbStatus, setDbStatus] = useState('checking'); // checking | connected | error
+  const [dbErrorMsg, setDbErrorMsg] = useState('');
+
   // Login State
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
   const [loginError, setLoginError] = useState('');
   const [loginLoading, setLoginLoading] = useState(false);
 
+  useEffect(() => {
+    fetch('/api/db-check')
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === 'connected') {
+          setDbStatus('connected');
+        } else {
+          setDbStatus('error');
+          setDbErrorMsg(data.error || 'Connection Failed');
+        }
+      })
+      .catch((err) => {
+        setDbStatus('error');
+        setDbErrorMsg('Network failed to reach server.');
+      });
+  }, []);
+
   // Signup State
   const [signupName, setSignupName] = useState('');
   const [signupEmail, setSignupEmail] = useState('');
   const [signupPassword, setSignupPassword] = useState('');
+  const [signupSecret, setSignupSecret] = useState('');
   const [signupError, setSignupError] = useState('');
   const [signupSuccess, setSignupSuccess] = useState('');
   const [signupLoading, setSignupLoading] = useState(false);
@@ -53,7 +75,7 @@ export default function AdminAuth() {
       const res = await fetch('/api/auth/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: signupName, email: signupEmail, password: signupPassword }),
+        body: JSON.stringify({ name: signupName, email: signupEmail, password: signupPassword, secretKey: signupSecret }),
       });
       const data = await res.json();
       if (res.ok && data.token) {
@@ -61,16 +83,23 @@ export default function AdminAuth() {
         localStorage.setItem('admin_token', data.token);
         setTimeout(() => router.push('/admin/dashboard'), 1500);
       } else {
-        setSignupError(data.error || 'Signup failed');
+        setSignupError(data.error || 'Signup failed (Is your MongoDB connection string correct?)');
       }
     } catch {
-      setSignupError('Connection error. Please try again.');
+      setSignupError('Connection error. Please check your internet or database URI.');
     }
     setSignupLoading(false);
   };
 
   return (
     <div className="auth-page">
+      {/* MongoDB Status Pill at the top left corner */}
+      <div style={{ position: 'absolute', top: '24px', left: '24px', background: 'rgba(255,255,255,0.1)', padding: '8px 16px', borderRadius: '20px', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '8px', zIndex: 100, backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.1)' }}>
+        {dbStatus === 'checking' && <><span style={{ color: 'yellow' }}>⏳</span> <span style={{ color: 'white' }}>Verifying DB Connection...</span></>}
+        {dbStatus === 'connected' && <><span style={{ color: '#4CAF50' }}>🟢</span> <span style={{ color: 'white' }}>MongoDB Live</span></>}
+        {dbStatus === 'error' && <><span style={{ color: '#F44336' }}>🔴</span> <span style={{ color: 'white' }}>DB Error: {dbErrorMsg}</span></>}
+      </div>
+
       <div className={`auth-container ${isRightPanelActive ? 'right-panel-active' : ''}`} id="container">
         
         {/* Sign Up Form */}
@@ -83,6 +112,7 @@ export default function AdminAuth() {
             <input type="text" placeholder="Full Name" value={signupName} onChange={e => setSignupName(e.target.value)} required />
             <input type="email" placeholder="Email Address" value={signupEmail} onChange={e => setSignupEmail(e.target.value)} required />
             <input type="password" placeholder="Password" value={signupPassword} onChange={e => setSignupPassword(e.target.value)} required />
+            <input type="password" placeholder="🔑 Admin Secret Key" value={signupSecret} onChange={e => setSignupSecret(e.target.value)} required style={{ borderColor: 'var(--gold)', background: 'rgba(212,175,55,0.05)' }} />
             <button className="auth-btn" type="submit" disabled={signupLoading}>
               {signupLoading ? 'Registering...' : 'Sign Up'}
             </button>

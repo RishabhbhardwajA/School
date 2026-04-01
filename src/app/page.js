@@ -16,6 +16,47 @@ function useReveal() {
   return ref;
 }
 
+/* ====== SCROLL TO TOP BUTTON ====== */
+function ScrollToTop() {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setVisible(window.scrollY > 400);
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+  return (
+    <button
+      className={`scroll-to-top ${visible ? 'visible' : ''}`}
+      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+      aria-label="Scroll to top"
+    >↑</button>
+  );
+}
+
+/* ====== FLOATING PARTICLES ====== */
+function FloatingParticles() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  
+  if (!mounted) return <div className="particles-container"></div>;
+
+  return (
+    <div className="particles-container">
+      {Array.from({ length: 20 }).map((_, i) => (
+        <div key={i} className="particle" style={{
+          left: `${Math.random() * 100}%`,
+          bottom: `-10px`,
+          animationDuration: `${8 + Math.random() * 12}s`,
+          animationDelay: `${Math.random() * 10}s`,
+          width: `${2 + Math.random() * 4}px`,
+          height: `${2 + Math.random() * 4}px`,
+          opacity: 0.3 + Math.random() * 0.4,
+        }} />
+      ))}
+    </div>
+  );
+}
+
 /* ====== COUNTER ANIMATION ====== */
 function AnimatedCounter({ target, suffix = '' }) {
   const [count, setCount] = useState(0);
@@ -110,8 +151,17 @@ function Navbar() {
               <a href="/admissions#apply">Apply Online</a>
             </div>
           </li>
-          <li><a href="#facilities">Facilities</a></li>
-          <li><a href="#gallery">Gallery</a></li>
+          <li><a href="/campus">Campus Tour</a></li>
+          <li>
+            <a href="#">Portals ▾</a>
+            <div className="dropdown-menu">
+              <a href="/portal/login">👨‍👩‍👦 Parent Portal</a>
+              <a href="/faculty">👨‍🏫 Faculty Directory</a>
+              <a href="/alumni">🎓 Alumni Wall</a>
+              <hr style={{ border: 'none', borderBottom: '1px solid rgba(0,0,0,0.1)', margin: '4px 0' }} />
+              <a href="/admin/login">⚙️ Admin Login</a>
+            </div>
+          </li>
           <li><a href="#contact">Contact</a></li>
         </ul>
         <div className="nav-cta">
@@ -127,18 +177,24 @@ function Navbar() {
 
 /* ====== HERO ====== */
 function Hero() {
+  const [settings, setSettings] = useState(null);
+  useEffect(() => {
+    fetch('/api/settings').then(r => r.json()).then(d => { if (d.success) setSettings(d.data); });
+  }, []);
+
   return (
     <section className="hero" style={{ background: `url('/hero-school.png') center/cover no-repeat` }}>
+      <FloatingParticles />
       <div className="hero-overlay" style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, rgba(10,31,63,0.95) 0%, rgba(10,31,63,0.6) 60%, rgba(10,31,63,0.1) 100%)', zIndex: 1 }}></div>
       <div className="hero-pattern" style={{ zIndex: 1, opacity: 0.5 }}></div>
       <div className="container" style={{ position: 'relative', zIndex: 2, display: 'flex', alignItems: 'center', height: '100%' }}>
         <div className="hero-content" style={{ maxWidth: '700px' }}>
           <p className="overline" style={{ textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}>CBSE Affiliated • Estd. 1985 • Delhi</p>
-          <h1 style={{ textShadow: '0 2px 20px rgba(0,0,0,0.5)' }}>Shaping <span>Future Leaders</span> Since 1985</h1>
-          <p style={{ textShadow: '0 2px 10px rgba(0,0,0,0.5)', fontWeight: '500' }}>Where academic excellence meets holistic development. Join Delhi&apos;s premier institution with 38+ years of legacy, 100% board results, and world-class facilities.</p>
+          <h1 style={{ textShadow: '0 2px 20px rgba(0,0,0,0.5)' }} dangerouslySetInnerHTML={{ __html: settings?.heroHeadline || 'Shaping <span>Future Leaders</span> Since 1985' }} />
+          <p style={{ textShadow: '0 2px 10px rgba(0,0,0,0.5)', fontWeight: '500' }}>{settings?.heroSubheadline || 'Where academic excellence meets holistic development. Join Delhi\'s premier institution with 38+ years of legacy, 100% board results, and world-class facilities.'}</p>
           <div className="hero-ctas">
-            <a href="/admissions#apply" className="btn btn-gold btn-lg">Schedule Campus Visit</a>
-            <a href="/admissions" className="btn btn-outline btn-lg">Download Prospectus</a>
+            <a href="/admissions#apply" className="btn btn-gold btn-lg glow-gold">Schedule Campus Visit</a>
+            <a href="/admissions" className="btn btn-glass btn-lg">Download Prospectus</a>
           </div>
         </div>
       </div>
@@ -164,6 +220,11 @@ function TrustBar() {
 
 /* ====== ABOUT ====== */
 function About() {
+  const [settings, setSettings] = useState(null);
+  useEffect(() => {
+    fetch('/api/settings').then(r => r.json()).then(d => { if (d.success) setSettings(d.data); });
+  }, []);
+
   return (
     <section id="about" className="section">
       <div className="container">
@@ -171,8 +232,7 @@ function About() {
           <div className="about-text reveal-left">
             <p className="overline">About Us</p>
             <h2>A Legacy of Excellence Since 1985</h2>
-            <p>Delhi Excellence Public School stands as a beacon of quality education in the heart of the capital. For over 38 years, we have been nurturing young minds with a perfect blend of academic rigor and holistic development.</p>
-            <p>Affiliated with CBSE and recognized by the Government of NCT Delhi, our institution has consistently delivered 100% board results while fostering creativity, sportsmanship, and strong moral values rooted in Indian traditions with a global outlook.</p>
+            <p style={{ whiteSpace: 'pre-line' }}>{settings?.aboutText || 'Delhi Excellence Public School stands as a beacon of quality education in the heart of the capital. For over 38 years, we have been nurturing young minds with a perfect blend of academic rigor and holistic development.\n\nAffiliated with CBSE and recognized by the Government of NCT Delhi, our institution has consistently delivered 100% board results while fostering creativity, sportsmanship, and strong moral values rooted in Indian traditions with a global outlook.'}</p>
             <a href="#principal" className="btn btn-navy" style={{marginTop: '20px'}}>Principal&apos;s Message →</a>
           </div>
           <div className="about-image reveal-right">
@@ -381,11 +441,17 @@ function Testimonials() {
 
 /* ====== EVENTS ====== */
 function Events() {
-  const events = [
+  const [events, setEvents] = useState([
     { date: 'March 15, 2026', title: 'Annual Sports Day', desc: 'Inter-house athletics, swimming, and team sports competitions.', tag: 'Sports' },
     { date: 'April 5, 2026', title: 'Science Exhibition', desc: 'Student-led innovations and working models showcase.', tag: 'Academic' },
     { date: 'April 20, 2026', title: 'Parent-Teacher Meet', desc: 'Quarterly academic review and progress discussion.', tag: 'Notice' },
-  ];
+  ]);
+  useEffect(() => {
+    fetch('/api/events').then(r => r.json()).then(d => {
+      if (d.success && d.data?.length > 0) setEvents(d.data);
+    }).catch(() => {});
+  }, []);
+
   return (
     <section className="section section-alt">
       <div className="container">
@@ -474,14 +540,19 @@ function GalleryPreview() {
 
 /* ====== FAQ ====== */
 function FAQ() {
-  const faqs = [
+  const [faqs, setFaqs] = useState([
     { q: 'What is the student-teacher ratio?', a: 'We maintain a healthy 1:25 student-teacher ratio to ensure personalized attention for every child.' },
     { q: 'What are the school timings?', a: 'Summer: 7:30 AM - 2:30 PM | Winter: 8:00 AM - 3:00 PM. Pre-primary has shorter hours.' },
     { q: 'What safety measures are in place?', a: 'We have 200+ CCTV cameras, trained security guards, visitor management system, GPS-tracked buses with female attendants, on-campus medical room, and a strict child protection policy.' },
     { q: 'Are scholarships available?', a: 'Yes, merit-based scholarships are offered to top performers in entrance tests and board exams. Up to 50% fee waiver available.' },
-    { q: 'Do you provide transport?', a: 'Yes, a fleet of 40+ AC buses covers all major Delhi NCR routes with GPS tracking and trained staff.' },
-    { q: 'How can parents track student progress?', a: 'Through our Parent Portal app, quarterly PTMs, and regular SMS/email updates on attendance and grades.' },
-  ];
+  ]);
+
+  useEffect(() => {
+    fetch('/api/faqs').then(r => r.json()).then(d => {
+      if (d.success && d.data?.length > 0) setFaqs(d.data);
+    });
+  }, []);
+
   return (
     <section className="section section-alt">
       <div className="container">
@@ -512,17 +583,33 @@ function ContactSection() {
   const [form, setForm] = useState({ name: '', phone: '', email: '', message: '' });
   const [status, setStatus] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [settings, setSettings] = useState(null);
+
+  useEffect(() => {
+    fetch('/api/settings').then(r => r.json()).then(d => { if (d.success) setSettings(d.data); });
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    // MOCK SUBMISSION FOR DEMO
-    setTimeout(() => {
-      setStatus({ type: 'success', text: 'Thank you! We will get back to you shortly.' });
-      setForm({ name: '', phone: '', email: '', message: '' });
-      setLoading(false);
-      setTimeout(() => setStatus(null), 5000);
-    }, 1000);
+    try {
+      const res = await fetch('/api/contacts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok) {
+        setStatus({ type: 'success', text: 'Thank you! We will get back to you shortly.' });
+        setForm({ name: '', phone: '', email: '', message: '' });
+      } else {
+        setStatus({ type: 'error', text: data.error || 'Something went wrong. Please try again.' });
+      }
+    } catch { 
+      setStatus({ type: 'error', text: 'Connection error' }); 
+    }
+    setLoading(false);
+    setTimeout(() => setStatus(null), 5000);
   };
 
   return (
@@ -536,15 +623,15 @@ function ContactSection() {
           <div className="reveal-left">
             <div className="contact-info-item">
               <div className="info-icon">📍</div>
-              <div><h5>Address</h5><p>NH-8, Dwarka Sector 21, New Delhi — 110077</p></div>
+              <div><h5>Address</h5><p>{settings?.contactAddress || 'NH-8, Dwarka Sector 21, New Delhi — 110077'}</p></div>
             </div>
             <div className="contact-info-item">
               <div className="info-icon">📞</div>
-              <div><h5>Phone</h5><p>+91 11-2345-6789 | +91 98765-43210</p></div>
+              <div><h5>Phone</h5><p>{settings?.contactPhone || '+91 11-2345-6789 | +91 98765-43210'}</p></div>
             </div>
             <div className="contact-info-item">
               <div className="info-icon">✉️</div>
-              <div><h5>Email</h5><p>info@delhiexcellence.edu.in</p></div>
+              <div><h5>Email</h5><p>{settings?.contactEmail || 'info@delhiexcellence.edu.in'}</p></div>
             </div>
             <div className="contact-info-item">
               <div className="info-icon">🕐</div>
@@ -595,6 +682,11 @@ function ContactSection() {
 
 /* ====== FOOTER ====== */
 function Footer() {
+  const [settings, setSettings] = useState(null);
+  useEffect(() => {
+    fetch('/api/settings').then(r => r.json()).then(d => { if (d.success) setSettings(d.data); });
+  }, []);
+
   return (
     <footer className="footer">
       <div className="container">
@@ -633,14 +725,14 @@ function Footer() {
           </div>
           <div className="footer-contact">
             <h4>Contact Us</h4>
-            <p><span className="icon">📍</span> NH-8, Dwarka Sector 21, New Delhi — 110077</p>
-            <p><span className="icon">📞</span> +91 11-2345-6789</p>
-            <p><span className="icon">✉️</span> info@delhiexcellence.edu.in</p>
+            <p><span className="icon">📍</span> {settings?.contactAddress || 'NH-8, Dwarka Sector 21, New Delhi — 110077'}</p>
+            <p><span className="icon">📞</span> {settings?.contactPhone || '+91 11-2345-6789'}</p>
+            <p><span className="icon">✉️</span> {settings?.contactEmail || 'info@delhiexcellence.edu.in'}</p>
             <p><span className="icon">🕐</span> Mon-Sat: 8:00 AM - 4:00 PM</p>
           </div>
         </div>
         <div className="footer-bottom">
-          <p>© 2026 Delhi Excellence Public School. All Rights Reserved.</p>
+          <p>© {new Date().getFullYear()} Delhi Excellence Public School. All Rights Reserved.</p>
           <p>CBSE Affiliation No: 2730XXX | Privacy Policy | Terms</p>
         </div>
       </div>
@@ -652,7 +744,7 @@ function Footer() {
 export default function HomePage() {
   const pageRef = useReveal();
   return (
-    <div ref={pageRef}>
+    <div ref={pageRef} className="page-loaded">
       <Navbar />
       <AnnouncementBar />
       <Hero />
@@ -669,6 +761,7 @@ export default function HomePage() {
       <FAQ />
       <ContactSection />
       <Footer />
+      <ScrollToTop />
     </div>
   );
 }

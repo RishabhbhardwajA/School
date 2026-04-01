@@ -6,7 +6,13 @@ import { signToken } from '@/lib/auth';
 
 export async function POST(request) {
   try {
-    const { name, email, password } = await request.json();
+    const { name, email, password, secretKey } = await request.json();
+
+    // Verify Admin Secret Key
+    const ADMIN_SECRET = process.env.ADMIN_SECRET_KEY || 'DEPS2026ADMIN';
+    if (!secretKey || secretKey !== ADMIN_SECRET) {
+      return NextResponse.json({ error: 'Invalid Admin Secret Key. Contact the school IT department.' }, { status: 403 });
+    }
 
     if (!name || !email || !password) {
       return NextResponse.json({ error: 'All fields are required' }, { status: 400 });

@@ -10,6 +10,9 @@ function AdminSidebar({ active }) {
     { href: '/admin/admissions', icon: '🎓', label: 'Admissions' },
     { href: '/admin/contacts', icon: '💬', label: 'Contact Queries' },
     { href: '/admin/announcements', icon: '📢', label: 'Announcements' },
+    { href: '/admin/events', icon: '📅', label: 'Events' },
+    { href: '/admin/faqs', icon: '❓', label: 'FAQs' },
+    { href: '/admin/settings', icon: '⚙️', label: 'Settings' },
   ];
   const handleLogout = () => { localStorage.removeItem('admin_token'); router.push('/admin/login'); };
   return (
@@ -31,19 +34,16 @@ export default function AdminAdmissions() {
   const router = useRouter();
 
   const fetchData = () => {
-    // MOCK DATA FOR DEMO PURPOSES
-    const dummyAdmissions = [
-      { _id: '1', studentName: 'Aarav Sharma', parentName: 'Rakesh Sharma', classApplying: 'Grade 6', phone: '+91 9876543210', email: 'rakesh.s@example.com', status: 'pending', createdAt: new Date().toISOString() },
-      { _id: '2', studentName: 'Priya Patel', parentName: 'Meera Patel', classApplying: 'Grade 1', phone: '+91 8765432109', email: 'meera.p@example.com', status: 'approved', createdAt: new Date(Date.now() - 86400000).toISOString() },
-      { _id: '3', studentName: 'Rohan Gupta', parentName: 'Sanjay Gupta', classApplying: 'Grade 9', phone: '+91 7654321098', email: 'sanjay.g@example.com', status: 'contacted', createdAt: new Date(Date.now() - 172800000).toISOString() },
-    ];
-    
-    let filtered = dummyAdmissions;
-    if (filter !== 'all') filtered = filtered.filter(a => a.status === filter);
-    if (search) filtered = filtered.filter(a => a.studentName.toLowerCase().includes(search.toLowerCase()) || a.email.toLowerCase().includes(search.toLowerCase()));
-    
-    setAdmissions(filtered);
-    setLoading(false);
+    const token = localStorage.getItem('admin_token');
+    if (!token) { router.push('/admin/login'); return; }
+    const params = new URLSearchParams();
+    if (filter !== 'all') params.set('status', filter);
+    if (search) params.set('search', search);
+    fetch(`/api/admissions?${params}`, { headers: { Authorization: `Bearer ${token}` } })
+      .then(r => r.json())
+      .then(d => { if (d.success) setAdmissions(d.data); else router.push('/admin/login'); })
+      .catch(() => {})
+      .finally(() => setLoading(false));
   };
 
   useEffect(() => { fetchData(); }, [filter, search]);

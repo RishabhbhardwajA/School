@@ -10,6 +10,9 @@ function AdminSidebar({ active }) {
     { href: '/admin/admissions', icon: '🎓', label: 'Admissions' },
     { href: '/admin/contacts', icon: '💬', label: 'Contact Queries' },
     { href: '/admin/announcements', icon: '📢', label: 'Announcements' },
+    { href: '/admin/events', icon: '📅', label: 'Events' },
+    { href: '/admin/faqs', icon: '❓', label: 'FAQs' },
+    { href: '/admin/settings', icon: '⚙️', label: 'Settings' },
   ];
   const handleLogout = () => { localStorage.removeItem('admin_token'); router.push('/admin/login'); };
   return (
@@ -30,13 +33,13 @@ export default function AdminContacts() {
   const router = useRouter();
 
   const fetchData = () => {
-    // MOCK DATA FOR DEMO PURPOSES
-    setContacts([
-      { _id: '1', name: 'Rahul Verma', phone: '+91 9988776655', email: 'rahul.v@gmail.com', message: 'Hello, what are the bus routes available for Dwarka Sector 10?', status: 'new', createdAt: new Date().toISOString() },
-      { _id: '2', name: 'Sunita Kapoor', phone: '+91 8877665544', email: 'sunik@yahoo.com', message: 'Regarding the admission age criteria for Nursery.', status: 'read', createdAt: new Date(Date.now() - 3600000).toISOString() },
-      { _id: '3', name: 'Amit Singh', phone: '+91 7766554433', email: 'amit123@hotmail.com', message: 'I need a duplicate TC for my son who passed out in 2022.', status: 'resolved', createdAt: new Date(Date.now() - 172800000).toISOString() },
-    ]);
-    setLoading(false);
+    const token = localStorage.getItem('admin_token');
+    if (!token) { router.push('/admin/login'); return; }
+    fetch('/api/contacts', { headers: { Authorization: `Bearer ${token}` } })
+      .then(r => r.json())
+      .then(d => { if (d.success) setContacts(d.data); else router.push('/admin/login'); })
+      .catch(() => {})
+      .finally(() => setLoading(false));
   };
 
   useEffect(() => { fetchData(); }, []);
