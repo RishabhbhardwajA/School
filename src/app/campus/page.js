@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import SubNavbar from '@/components/SubNavbar';
 
 export default function VirtualCampusTour() {
   const [gallery, setGallery] = useState([]);
@@ -43,25 +44,7 @@ export default function VirtualCampusTour() {
 
   return (
     <>
-      {/* Top Navbar Header Component - Simplified for aesthetic consistency */}
-      <nav className="navbar scrolled">
-        <div className="navbar-inner">
-          <Link href="/" className="nav-logo">
-            <div className="logo-icon">DE</div>
-            <div className="logo-text">
-              <h3 style={{ margin: 0 }}>Delhi Excellence</h3>
-              <small>Public School</small>
-            </div>
-          </Link>
-          <ul className="nav-links">
-            <li><Link href="/">Home</Link></li>
-            <li><Link href="/faculty">Faculty</Link></li>
-            <li><Link href="/alumni">Alumni Wall</Link></li>
-            <li><Link href="/campus" style={{ color: 'var(--gold)' }}>Campus Tour</Link></li>
-            <li><Link href="/admissions" className="btn btn-gold btn-sm" style={{ color: 'var(--navy)' }}>Apply</Link></li>
-          </ul>
-        </div>
-      </nav>
+      <SubNavbar activePage="Campus" />
 
       {/* Hero Section */}
       <section className="section" style={{ background: 'var(--navy)', color: 'white', padding: '80px 0 60px 0', textAlign: 'center' }}>

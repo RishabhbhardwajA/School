@@ -2,29 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-
-function AdminSidebar({ active }) {
-  const router = useRouter();
-  const links = [
-    { href: '/admin/dashboard', icon: '📊', label: 'Dashboard' },
-    { href: '/admin/admissions', icon: '🎓', label: 'Admissions' },
-    { href: '/admin/contacts', icon: '💬', label: 'Contact Queries' },
-    { href: '/admin/announcements', icon: '📢', label: 'Announcements' },
-    { href: '/admin/events', icon: '📅', label: 'Events' },
-    { href: '/admin/faqs', icon: '❓', label: 'FAQs' },
-    { href: '/admin/settings', icon: '⚙️', label: 'Settings' },
-  ];
-  const handleLogout = () => { localStorage.removeItem('admin_token'); router.push('/admin/login'); };
-  return (
-    <aside className="admin-sidebar">
-      <div className="sidebar-header"><h3>🏫 DEPS Admin</h3><small>Management Portal</small></div>
-      <ul className="sidebar-nav">
-        {links.map(l => (<li key={l.href}><Link href={l.href} className={active === l.label ? 'active' : ''}><span className="nav-icon">{l.icon}</span>{l.label}</Link></li>))}
-        <li style={{ marginTop: '32px' }}><button onClick={handleLogout} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 24px', color: 'rgba(255,255,255,0.6)', fontSize: '0.88rem', background: 'none', border: 'none', width: '100%', cursor: 'pointer', fontFamily: 'var(--font-body)' }}>🚪 Logout</button></li>
-      </ul>
-    </aside>
-  );
-}
+import AdminSidebar from '@/components/AdminSidebar';
 
 export default function AdminAnnouncements() {
   const [announcements, setAnnouncements] = useState([]);

@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import SubNavbar from '@/components/SubNavbar';
 
 export default function FacultyDirectory() {
   const [faculty, setFaculty] = useState([]);
@@ -38,25 +39,7 @@ export default function FacultyDirectory() {
 
   return (
     <>
-      {/* Top Navbar Header Component - Simplified for aesthetic consistency */}
-      <nav className="navbar scrolled">
-        <div className="navbar-inner">
-          <Link href="/" className="nav-logo">
-            <div className="logo-icon">DE</div>
-            <div className="logo-text">
-              <h3 style={{ margin: 0 }}>Delhi Excellence</h3>
-              <small>Public School</small>
-            </div>
-          </Link>
-          <ul className="nav-links">
-            <li><Link href="/">Home</Link></li>
-            <li><Link href="/faculty" style={{ color: 'var(--gold)' }}>Faculty</Link></li>
-            <li><Link href="/alumni">Alumni Wall</Link></li>
-            <li><Link href="/campus">Campus</Link></li>
-            <li><Link href="/admissions" className="btn btn-gold btn-sm" style={{ color: 'var(--navy)' }}>Apply</Link></li>
-          </ul>
-        </div>
-      </nav>
+      <SubNavbar activePage="Faculty" />
 
       {/* Hero Section */}
       <section className="section" style={{ background: 'var(--navy)', color: 'white', padding: '80px 0 60px 0', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>

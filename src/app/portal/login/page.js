@@ -21,7 +21,7 @@ export default function PortalLogin() {
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--navy)' }}>
       {/* Left Branding Side */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '60px', background: 'linear-gradient(135deg, rgba(10,31,63,0.9), rgba(10,31,63,0.8)), url("/hero-school.png") center/cover', color: 'white', justifyContent: 'space-between' }}>
+      <div className="login-left-panel" style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '60px', background: 'linear-gradient(135deg, rgba(10,31,63,0.9), rgba(10,31,63,0.8)), url("/hero-school.png") center/cover', color: 'white', justifyContent: 'space-between' }}>
         <div>
           <Link href="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '12px', color: 'white', textDecoration: 'none' }}>
             <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'linear-gradient(135deg, var(--navy), var(--navy-light))', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gold)', fontWeight: 800, border: '2px solid var(--gold)' }}>DE</div>
@@ -102,11 +102,21 @@ export default function PortalLogin() {
           animation: spin 1s linear infinite;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
-        /* Mobile handling */
         @media (max-width: 900px) {
+          .login-left-panel {
+            display: none !important;
+          }
           .login-right-panel {
             flex: 1 !important;
             padding: 40px 24px !important;
+          }
+        }
+        @media (max-width: 480px) {
+          .login-right-panel {
+            padding: 32px 16px !important;
+          }
+          .login-right-panel h2 {
+            font-size: 1.6rem !important;
           }
         }
       `}} />

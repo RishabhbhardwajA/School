@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import SubNavbar from '@/components/SubNavbar';
 
 export default function FeeCalculator() {
   const [routes, setRoutes] = useState([]);
@@ -41,24 +42,7 @@ export default function FeeCalculator() {
 
   return (
     <>
-      <nav className="navbar scrolled">
-        <div className="navbar-inner">
-          <Link href="/" className="nav-logo">
-            <div className="logo-icon">DE</div>
-            <div className="logo-text">
-              <h3 style={{ margin: 0 }}>Delhi Excellence</h3>
-              <small>Public School</small>
-            </div>
-          </Link>
-          <ul className="nav-links">
-            <li><Link href="/">Home</Link></li>
-            <li><Link href="/faculty">Faculty</Link></li>
-            <li><Link href="/alumni">Alumni Wall</Link></li>
-            <li><Link href="/campus">Campus</Link></li>
-            <li><Link href="/admissions" className="btn btn-gold btn-sm" style={{ color: 'var(--navy)' }}>Apply</Link></li>
-          </ul>
-        </div>
-      </nav>
+      <SubNavbar activePage="" />
 
       <section className="section" style={{ background: 'var(--navy)', color: 'white', padding: '60px 0 40px 0', textAlign: 'center' }}>
         <div className="container">
@@ -70,7 +54,7 @@ export default function FeeCalculator() {
       </section>
 
       <section className="section" style={{ background: '#f8fafc', minHeight: '60vh' }}>
-        <div className="container" style={{ display: 'grid', gridTemplateColumns: '1fr 350px', gap: '32px', alignItems: 'start' }}>
+        <div className="container fee-calc-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 350px', gap: '32px', alignItems: 'start' }}>
           
           {/* Controls */}
           <div className="glass-panel" style={{ background: 'white', padding: '32px' }}>

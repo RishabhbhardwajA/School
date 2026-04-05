@@ -16,6 +16,7 @@ function useReveal() {
 
 export default function AdmissionsPage() {
   const pageRef = useReveal();
+  const [mobileOpen, setMobileOpen] = useState(false);
   const [form, setForm] = useState({ studentName: '', parentName: '', phone: '', email: '', classApplying: '', dob: '', gender: '', address: '', previousSchool: '', message: '' });
   const [status, setStatus] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -42,16 +43,21 @@ export default function AdmissionsPage() {
             <div className="logo-icon">DE</div>
             <div className="logo-text"><h3>Delhi Excellence</h3><small>Public School — CBSE Affiliated</small></div>
           </a>
-          <ul className="nav-links">
-            <li><a href="/">Home</a></li>
-            <li><a href="/#about">About</a></li>
-            <li><a href="/#academics">Academics</a></li>
-            <li><a href="#process">Process</a></li>
-            <li><a href="#fees">Fees</a></li>
-            <li><a href="#apply">Apply</a></li>
-            <li><a href="/#contact">Contact</a></li>
+          <ul className={`nav-links ${mobileOpen ? 'mobile-open' : ''}`}>
+            <li><a href="/" onClick={() => setMobileOpen(false)}>Home</a></li>
+            <li><a href="/#about" onClick={() => setMobileOpen(false)}>About</a></li>
+            <li><a href="/#academics" onClick={() => setMobileOpen(false)}>Academics</a></li>
+            <li><a href="#process" onClick={() => setMobileOpen(false)}>Process</a></li>
+            <li><a href="#fees" onClick={() => setMobileOpen(false)}>Fees</a></li>
+            <li><a href="#apply" onClick={() => setMobileOpen(false)}>Apply</a></li>
+            <li><a href="/#contact" onClick={() => setMobileOpen(false)}>Contact</a></li>
           </ul>
           <div className="nav-cta"><a href="#apply" className="btn btn-gold btn-sm">Apply Now</a></div>
+          <button className="mobile-toggle" onClick={() => setMobileOpen(!mobileOpen)} aria-label="Toggle navigation">
+            <span style={mobileOpen ? { transform: 'rotate(45deg) translate(5px, 5px)' } : {}}></span>
+            <span style={mobileOpen ? { opacity: 0 } : {}}></span>
+            <span style={mobileOpen ? { transform: 'rotate(-45deg) translate(5px, -5px)' } : {}}></span>
+          </button>
         </div>
       </nav>
 

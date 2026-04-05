@@ -20,12 +20,12 @@ export default function PortalDashboard() {
   return (
     <div style={{ background: '#f8fafc', minHeight: '100vh', fontFamily: 'var(--font-body)' }}>
       {/* Portal Navbar */}
-      <nav style={{ background: 'var(--navy)', color: 'white', padding: '16px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <nav className="portal-nav" style={{ background: 'var(--navy)', color: 'white', padding: '16px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           <span style={{ fontSize: '1.5rem' }}>🎓</span>
           <span style={{ fontWeight: 600, fontSize: '1.2rem' }}>DEPS Parent Portal</span>
         </div>
-        <div style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
+        <div className="portal-nav-actions" style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
           <span style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.7)' }}>Welcome, Mr. Sharma</span>
           <button onClick={handleLogout} className="btn" style={{ background: 'rgba(255,255,255,0.1)', color: 'white', border: '1px solid rgba(255,255,255,0.2)', padding: '6px 16px', fontSize: '0.85rem' }}>
             Logout
@@ -33,7 +33,7 @@ export default function PortalDashboard() {
         </div>
       </nav>
 
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '32px 16px', display: 'grid', gridTemplateColumns: '300px 1fr', gap: '32px' }}>
+      <div className="dashboard-grid" style={{ maxWidth: '1200px', margin: '0 auto', padding: '32px 16px' }}>
         
         {/* Left Sidebar - Student Profile */}
         <div style={{ background: 'white', borderRadius: 'var(--radius-lg)', boxShadow: '0 4px 6px rgba(0,0,0,0.05)', overflow: 'hidden' }}>
@@ -65,24 +65,24 @@ export default function PortalDashboard() {
           <h2 style={{ color: 'var(--navy)', marginBottom: '24px' }}>Overview Dashboard</h2>
           
           {/* Quick Actions / Alerts */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(1fr, 1fr)', gap: '24px', marginBottom: '32px' }}>
+          <div className="dashboard-cards" style={{ marginBottom: '32px' }}>
             
             {/* Fee Alert Card */}
-            <div className="glass-panel" style={{ background: 'linear-gradient(to right, #FFF3E0, #FFE0B2)', padding: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div className="glass-panel" style={{ background: 'linear-gradient(to right, #FFF3E0, #FFE0B2)', padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px', justifyContent: 'space-between', alignItems: 'flex-start' }}>
               <div>
                 <h4 style={{ color: '#E65100', margin: '0 0 8px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <span>⚠️</span> Term 2 Fee Due
                 </h4>
                 <p style={{ margin: 0, color: '#BF360C', fontSize: '0.9rem' }}>Dear Parent, the quarterly fee is due on the 10th of this month.</p>
               </div>
-              <Link href="/portal/fees" className="btn btn-navy">
+              <Link href="/portal/fees" className="btn btn-navy" style={{ alignSelf: 'stretch', textAlign: 'center' }}>
                 Pay ₹22,500 Online
               </Link>
             </div>
 
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+          <div className="dashboard-cards">
             {/* Recent Homework */}
             <div style={{ background: 'white', borderRadius: 'var(--radius-lg)', boxShadow: '0 4px 6px rgba(0,0,0,0.05)', padding: '24px' }}>
               <h3 style={{ color: 'var(--navy)', borderBottom: '1px solid #eee', paddingBottom: '12px', marginBottom: '16px' }}>Recent Homework</h3>
@@ -126,6 +126,21 @@ export default function PortalDashboard() {
 
         </div>
       </div>
+
+      <style dangerouslySetInnerHTML={{ __html: `
+        .dashboard-grid { display: grid; grid-template-columns: 300px 1fr; gap: 32px; }
+        .dashboard-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+        @media (max-width: 900px) {
+          .dashboard-grid { grid-template-columns: 1fr; }
+          .dashboard-cards { grid-template-columns: 1fr; }
+          .portal-nav { flex-direction: column; align-items: stretch !important; gap: 12px; }
+          .portal-nav-actions { justify-content: space-between; }
+        }
+        @media (max-width: 480px) {
+          .dashboard-grid { padding: 16px 8px !important; gap: 16px; }
+          .portal-nav-actions span { display: none; }
+        }
+      `}} />
     </div>
   );
 }

@@ -115,11 +115,26 @@ function AnnouncementBar() {
 function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState(null);
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const toggleDropdown = (name, e) => {
+    // Only toggle on mobile
+    if (window.innerWidth <= 768) {
+      e.preventDefault();
+      setOpenDropdown(openDropdown === name ? null : name);
+    }
+  };
+
+  const closeMenu = () => {
+    setMobileOpen(false);
+    setOpenDropdown(null);
+  };
+
   return (
     <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
       <div className="navbar-inner">
@@ -131,44 +146,46 @@ function Navbar() {
           </div>
         </a>
         <ul className={`nav-links ${mobileOpen ? 'mobile-open' : ''}`}>
-          <li><a href="#about">About</a></li>
-          <li>
-            <a href="#academics">Academics ▾</a>
+          <li><a href="#about" onClick={closeMenu}>About</a></li>
+          <li className={openDropdown === 'academics' ? 'dropdown-open' : ''}>
+            <a href="#academics" onClick={(e) => toggleDropdown('academics', e)}>Academics ▾</a>
             <div className="dropdown-menu">
-              <a href="#academics">Curriculum</a>
-              <a href="#academics">Streams</a>
-              <a href="#facilities">Smart Classrooms</a>
-              <a href="#achievements">Results</a>
+              <a href="#academics" onClick={closeMenu}>Curriculum</a>
+              <a href="#academics" onClick={closeMenu}>Streams</a>
+              <a href="#facilities" onClick={closeMenu}>Smart Classrooms</a>
+              <a href="#achievements" onClick={closeMenu}>Results</a>
             </div>
           </li>
-          <li>
-            <a href="/admissions">Admissions ▾</a>
+          <li className={openDropdown === 'admissions' ? 'dropdown-open' : ''}>
+            <a href="/admissions" onClick={(e) => toggleDropdown('admissions', e)}>Admissions ▾</a>
             <div className="dropdown-menu">
-              <a href="/admissions">Admission Process</a>
-              <a href="/admissions#fees">Fee Structure</a>
-              <a href="/admissions#eligibility">Eligibility</a>
-              <a href="/admissions#documents">Documents</a>
-              <a href="/admissions#apply">Apply Online</a>
+              <a href="/admissions" onClick={closeMenu}>Admission Process</a>
+              <a href="/admissions#fees" onClick={closeMenu}>Fee Structure</a>
+              <a href="/admissions#eligibility" onClick={closeMenu}>Eligibility</a>
+              <a href="/admissions#documents" onClick={closeMenu}>Documents</a>
+              <a href="/admissions#apply" onClick={closeMenu}>Apply Online</a>
             </div>
           </li>
-          <li><a href="/campus">Campus Tour</a></li>
-          <li>
-            <a href="#">Portals ▾</a>
+          <li><a href="/campus" onClick={closeMenu}>Campus Tour</a></li>
+          <li className={openDropdown === 'portals' ? 'dropdown-open' : ''}>
+            <a href="#" onClick={(e) => toggleDropdown('portals', e)}>Portals ▾</a>
             <div className="dropdown-menu">
-              <a href="/portal/login">👨‍👩‍👦 Parent Portal</a>
-              <a href="/faculty">👨‍🏫 Faculty Directory</a>
-              <a href="/alumni">🎓 Alumni Wall</a>
+              <a href="/portal/login" onClick={closeMenu}>👨‍👩‍👦 Parent Portal</a>
+              <a href="/faculty" onClick={closeMenu}>👨‍🏫 Faculty Directory</a>
+              <a href="/alumni" onClick={closeMenu}>🎓 Alumni Wall</a>
               <hr style={{ border: 'none', borderBottom: '1px solid rgba(0,0,0,0.1)', margin: '4px 0' }} />
-              <a href="/admin/login">⚙️ Admin Login</a>
+              <a href="/admin/login" onClick={closeMenu}>⚙️ Admin Login</a>
             </div>
           </li>
-          <li><a href="#contact">Contact</a></li>
+          <li><a href="#contact" onClick={closeMenu}>Contact</a></li>
         </ul>
         <div className="nav-cta">
           <a href="/admissions#apply" className="btn btn-gold btn-sm">Apply Now</a>
         </div>
-        <button className="mobile-toggle" onClick={() => setMobileOpen(!mobileOpen)}>
-          <span></span><span></span><span></span>
+        <button className="mobile-toggle" onClick={() => { setMobileOpen(!mobileOpen); setOpenDropdown(null); }} aria-label="Toggle navigation">
+          <span style={mobileOpen ? { transform: 'rotate(45deg) translate(5px, 5px)' } : {}}></span>
+          <span style={mobileOpen ? { opacity: 0 } : {}}></span>
+          <span style={mobileOpen ? { transform: 'rotate(-45deg) translate(5px, -5px)' } : {}}></span>
         </button>
       </div>
     </nav>

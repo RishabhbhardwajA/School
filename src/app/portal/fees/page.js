@@ -55,12 +55,12 @@ export default function PortalFees() {
 
   return (
     <>
-      <nav style={{ background: 'var(--navy)', color: 'white', padding: '16px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <nav className="portal-nav" style={{ background: 'var(--navy)', color: 'white', padding: '16px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           <span style={{ fontSize: '1.5rem' }}>🎓</span>
           <span style={{ fontWeight: 600, fontSize: '1.2rem' }}>DEPS Parent Portal</span>
         </div>
-        <div style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
+        <div className="portal-nav-actions" style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
           <span style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.7)' }}>Fee Desk</span>
           <button onClick={() => { localStorage.removeItem('parent_token'); router.push('/portal/login'); }} className="btn" style={{ background: 'rgba(255,255,255,0.1)', color: 'white', border: '1px solid rgba(255,255,255,0.2)', padding: '6px 16px', fontSize: '0.85rem' }}>
             Logout
@@ -76,7 +76,7 @@ export default function PortalFees() {
           </Link>
 
           <div style={{ background: 'white', borderRadius: '16px', boxShadow: '0 8px 16px rgba(0,0,0,0.05)', overflow: 'hidden' }}>
-            <div style={{ background: 'linear-gradient(135deg, var(--navy), #1A365D)', color: 'white', padding: '32px', display: 'flex', justifyContent: 'space-between', alignItems: 'end' }}>
+            <div className="fee-header" style={{ background: 'linear-gradient(135deg, var(--navy), #1A365D)', color: 'white', padding: '32px', display: 'flex', justifyContent: 'space-between', alignItems: 'end', flexWrap: 'wrap', gap: '24px' }}>
               <div>
                 <p style={{ margin: '0 0 8px 0', opacity: 0.8, textTransform: 'uppercase', letterSpacing: '1px', fontSize: '0.8rem' }}>Quarterly Due</p>
                 <h1 style={{ margin: 0, fontSize: '2.5rem' }}>Term 2 Fees</h1>
